@@ -10,28 +10,23 @@ library(lubridate)
 # Read the csv file
 df_csv <- read.csv("Database/argentina_test.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
-# Convert the df to ts
-# format <- "%d/%m/%Y %H:%M" # Set the format
-# df_csv$date <- as.POSIXct(strptime(df_csv$date, format), tz = "") # Change the data type of the time column
-# df_ts <- xts(df_csv[, -1], order.by = as.POSIXct(df_csv$date)) # Convert to xts PROBLEM -> converts to char too...
+# Subsetting in the data.frame
+subset_test <- unname(data.matrix(select(filter(df_csv, week == 2), c(so2, no))))
 
+# Define matrices
+mat1 <- matrix(rnorm(16), nrow = 4)
+mat2 <- matrix(rnorm(16), nrow = 4)
 
-# # Subsetting option 1
-# subset_1 <- subset(df_csv, df_csv$week == 2, select = c(so2, no))
-# # print(subset_1)
-# # print(str(matrix(subset_1)))
+empty_list <- list()
 
-# Option 2
-subset_2 <- select(filter(df_csv, week == 2), c(so2, no))
-print(subset_2)
-names(subset_2) <- NULL
-print(str(data.matrix(subset_2)))
-print(class(data.matrix(subset_2)))
+empty_list[[1]] <- mat1
+empty_list[[2]] <- mat2
+print(str(empty_list))
 
-# Testing a matrix
-mat <- matrix(rnorm(36), nrow = 6)
-print(str(mat))
-print(class(mat))
+# Create loop, see ideas -> https://www.statology.org/create-empty-list-in-r/
+# This introduces rbind() -> https://www.projectpro.io/recipes/append-output-from-for-loop-dataframe-r
 
-# print(str(SyntheticData1$data[[1]]))
+# print(str(SyntheticData1))
+# print(SyntheticData1$data[[1]])
 # print(class(SyntheticData1$data[[1]]))
+# print(str(SyntheticData1$data[[1]]))
