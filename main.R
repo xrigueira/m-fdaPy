@@ -2,29 +2,53 @@
 # from Lopez-Oriona 2021
 
 # Include the needed libraries
-library(xts)
 library(dplyr)
 library(mlmts)
-library(lubridate)
 
 # Read the csv file
-df_csv <- read.csv("Database/argentina_test.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+df <- read.csv("Database/argentina_test.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
-# Subsetting in the data.frame
-subset_test <- unname(data.matrix(select(filter(df_csv, week == 2), c(so2, no))))
 
-# Define matrices
-mat1 <- matrix(rnorm(16), nrow = 4)
-mat2 <- matrix(rnorm(16), nrow = 4)
+# Get the numbers of the weeks
+weeks <- c(df$weekOrder)[!duplicated(c(df$weekOrder))]
 
-empty_list <- list()
+# Subsetting in the data.frame to create the list of matrices
+mts <- list()
+counter <- 1
 
-empty_list[[1]] <- mat1
-empty_list[[2]] <- mat2
-print(str(empty_list))
+for (i in weeks) {
+    if (i != 0) {
+        mat <- unname(data.matrix(select(filter(df, week == i), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+        mts[[counter]] <- mat
 
-# Create loop, see ideas -> https://www.statology.org/create-empty-list-in-r/
-# This introduces rbind() -> https://www.projectpro.io/recipes/append-output-from-for-loop-dataframe-r
+        counter <- counter + 1
+    }
+}
+
+mts_test <- list()
+# mat1 <- matrix(rnorm(16), nrow = 4)
+# mat2 <- matrix(rnorm(16), nrow = 4)
+# mat3 <- matrix(rnorm(16), nrow = 4)
+# mat4 <- matrix(rnorm(16), nrow = 4)
+
+# mat1 <- matrix(rnorm(56), nrow = 8)
+# mat2 <- matrix(rnorm(56), nrow = 8)
+# mat3 <- matrix(rnorm(56), nrow = 8)
+# mat4 <- matrix(rnorm(56), nrow = 8)
+
+mat1 <- matrix(rnorm(672), nrow = 96)
+print(mat1)
+mat2 <- matrix(rnorm(672), nrow = 96)
+mat3 <- matrix(rnorm(672), nrow = 96)
+mat4 <- matrix(rnorm(672), nrow = 96)
+
+mts_test[[1]] <- mat1
+mts_test[[2]] <- mat2
+mts_test[[3]] <- mat3
+mts_test[[4]] <- mat4
+
+
+outliers <- outlier_detection(mts_test)
 
 # print(str(SyntheticData1))
 # print(SyntheticData1$data[[1]])
