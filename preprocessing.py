@@ -19,6 +19,7 @@ if __name__ == '__main__':
     normalizer(File=f'{varName}_full.csv')
     print('[INFO] normalizer() DONE')
     
-    # Filter out those months with too many NaN and iterate on the rest
+    # Filter out those months or weeks or days (depending on the desired
+    # time unit) with too many NaN and iterate on the rest
     filterer(File=f'{varName}_nor.csv', timeframe=timeFrame)
     print('[INFO] filterer() DONE')
