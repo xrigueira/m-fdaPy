@@ -1,9 +1,8 @@
-mat <- matrix(data = c(3, 8, 1, 5, 4, 6, 2, 1, 9, 10, 7, 5), nrow = 3, ncol = 4)
+i <- 2019
+j <- 4
 
-print(mat)
+empty_list <- list()
 
-col_means <- round(colMeans(mat), digit = 0)
+empty_list[[1]] <- c(j, i)
 
-mat <- rbind(mat, unname(col_means))
-
-print(class(mat))
+print(empty_list[1][1])
