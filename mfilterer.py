@@ -37,127 +37,164 @@ def mfilterer(File, timeframe):
                 
                 df = df.loc[df['month'] == j]
 
-        #         # Get total number of NaN and the max consecutive NaNs
-        #         numNaN = df['value'].isnull().sum()
-        #         consecNaN = max(df['value'].isnull().astype(int).groupby(df['value'].notnull().astype(int).cumsum()).sum())
+                # Get total number of NaN and the max consecutive NaNs
+                for k in cols:
+
+                    numNaN.append(df[k].isnull().sum())
+                    consecNaN.append(max(df[k].isnull().astype(int).groupby(df[k].notnull().astype(int).cumsum()).sum()))
+
+                # Count the number of NaN higher than 480 and the number of consecNaN higher than 192
+                count_numNaN = sum(map(lambda x: x >= 480, numNaN))
+                count_consecNaN = sum(map(lambda x: x >= 192, consecNaN))
                 
-        #         # Get the first and last index of those months with too many empty (or consecutive) values (NaN in this case)
-        #         if numNaN >= 480 or consecNaN >= 192:
-        #             indexInit.append(df.index[0])
-        #             indexEnd.append(df.index[-1])
+                # Get the first and last index of those months with too many empty (or consecutive) values 
+                # in several variables (NaN in this case)
+                if count_numNaN >= 3 or count_consecNaN >= 3:
+                    indexInit.append(df.index[0])
+                    indexEnd.append(df.index[-1])
 
-        #         df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
+                # Clean numNaN and consecNaN
+                numNaN, consecNaN = [], []
+
+                df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
                 
-        #         if j == 12:
-        #             df = df.loc[df['year'] == (i+1)]
-        #         else:
-        #             df = df.loc[df['year'] == i]
+                if j == 12:
+                    df = df.loc[df['year'] == (i+1)]
+                else:
+                    df = df.loc[df['year'] == i]
 
+        # Delete those parts of the data frame between the appended indices
+        df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
 
-        # # Delete those parts of the data frame between the appended indices
-        # df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
+        counter = 0
+        lenMonth = 2976
+        for i,j in zip(indexInit, indexEnd):
 
-        # counter = 0
-        # lenMonth = 2976
-        # for i,j in zip(indexInit, indexEnd):
-
-        #     df = df.drop(df.index[int(i-counter*lenMonth):int(j-counter*lenMonth+1)], inplace=False)
-        #     counter += 1
+            df = df.drop(df.index[int(i-counter*lenMonth):int(j-counter*lenMonth+1)], inplace=False)
+            counter += 1
         
-        # # Interpolate the remaining empty values
-        # df = (df.interpolate(method='polynomial', order=1)).round(2)
+        # Interpolate the remaining empty values
+        df = (df.interpolate(method='polynomial', order=1)).round(2)
         
-        # # Save the data frame 
-        # cols = list(df.columns.values.tolist())
-        # df.to_csv(f'Database/{fileName[0:-4]}_pro.csv', sep=';', encoding='utf-8', index=False, header=cols)
+        # Save the data frame 
+        cols = list(df.columns.values.tolist())
+        df.to_csv(f'Database/{fileName[0:-4]}_pro.csv', sep=';', encoding='utf-8', index=False, header=cols)
 
-    # elif timeframe == 'b':
+    elif timeframe == 'b':
         
-    #     weeks = [i for i in weeks if i != 0] # Remove the 0
+        weeks = [i for i in weeks if i != 0] # Remove the 0
 
-    #     indexInit, indexEnd = [], []
-    #     for i in weeks:
+        indexInit, indexEnd = [], []
+        numNaN, consecNaN = [], []
+        for i in weeks:
             
-    #         df = df.loc[df['week'] == i]
-
-    #         # Get total number of NaN and the max consecutive NaNs
-    #         numNaN = df['value'].isnull().sum()
-    #         consecNaN = max(df['value'].isnull().astype(int).groupby(df['value'].notnull().astype(int).cumsum()).sum())
-    #         # Get the first and last index of those weeks with too many empty (or consecutive) values (NaN in this case)
-    #         if numNaN >= 192 or consecNaN >= 24:
-    #             indexInit.append(df.index[0])
-    #             indexEnd.append(df.index[-1])
-
-    #         df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
+            df = df.loc[df['week'] == i]
             
-    #     # Delete those parts of the data frame between the appended indices
-    #     df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
-        
-    #     counter = 0
-    #     lenWeek = 672
-    #     for i, j in zip(indexInit, indexEnd):
+            # Get total number of NaN and the max consecutive NaNs
+            for k in cols:
+                
+                numNaN.append(df[k].isnull().sum())
+                consecNaN.append(max(df[k].isnull().astype(int).groupby(df[k].notnull().astype(int).cumsum()).sum()))
             
-    #         df = df.drop(df.index[int(i-counter*lenWeek):int(j-counter*lenWeek+1)], inplace=False)
-    #         counter += 1
+            # Count the number of NaN higher than 192 and the number of consecNaN higher than 24
+            count_numNaN = sum(map(lambda x: x >= 192, numNaN))
+            count_consecNaN = sum(map(lambda x: x >= 24, consecNaN))
+            
+            # Get the first and last index of those months with too many empty (or consecutive) values 
+            # in several variables (NaN in this case)
+            if count_numNaN >= 3 or count_consecNaN >= 3:
+                indexInit.append(df.index[0])
+                indexEnd.append(df.index[-1])
+            
+            # Clean numNaN and consecNaN
+            numNaN, consecNaN = [], []
+            
+            df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
+            
+        # Delete those parts of the data frame between the appended indices
+        df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
         
-    #     # Interpolate the remaining empty values
-    #     df = (df.interpolate(method='polynomial', order=1)).round(2)
-
-    #     # Save the data frame
-    #     cols = list(df.columns.values.tolist())
-    #     df.to_csv(f'Database/{fileName[0:-4]}_pro.csv', sep=';', encoding='utf-8', index=False, header=cols)
+        counter = 0
+        lenWeek = 672
+        for i,j in zip(indexInit, indexEnd):
+            
+            df = df.drop(df.index[int(i-counter*lenWeek):int(j-counter*lenWeek+1)], inplace=False)
+            counter += 1
         
-    # elif timeframe == 'c':
+        # Interpolate the remaining empty values
+        df = (df.interpolate(method='polynomial', order=1)).round(2)
 
-    #     indexInit, indexEnd = [], []
-    #     for i in years:
+        # Save the data frame
+        cols = list(df.columns.values.tolist())
+        df.to_csv(f'Database/{fileName[0:-4]}_pro.csv', sep=';', encoding='utf-8', index=False, header=cols)
+        
+    elif timeframe == 'c':
 
-    #         df = df.loc[df['year'] == i]
+        indexInit, indexEnd = [], []
+        numNaN, consecNaN = [], []
+        for i in years:
 
-    #         for j in months:
+            df = df.loc[df['year'] == i]
 
-    #             df = df.loc[df['month'] == j]
+            for j in months:
 
-    #             for k in days:
+                df = df.loc[df['month'] == j]
 
-    #                 df = df.loc[df['day'] == k]
+                for k in days:
 
-    #                 # Get total number of NaN and the max consecutive NaNs
-    #                 numNaN = df['value'].isnull().sum()
-    #                 consecNaN = max(df['value'].isnull().astype(int).groupby(df['value'].notnull().astype(int).cumsum()).sum())
-    #                 # Get the first and last index of those days with too many empty (or consecutive) values (NaN in this case)
-    #                 if numNaN >= 20 or consecNaN >= 8:
-    #                     indexInit.append(df.index[0])
-    #                     indexEnd.append(df.index[-1])
-
-    #                 df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
-
-    #                 if j == 12 and k == 31:
-    #                     df = df.loc[df['year'] == (i+1)]
-    #                     df = df.loc[df['month'] == 1]
+                    df = df.loc[df['day'] == k]
                     
-    #                 elif j <= 12:
-    #                     df = df.loc[df['year'] == i]
+                    # Get total number of NaN and the max consecutive NaNs
+                    for l in cols:
                         
-    #                     if k < 31:
-    #                         df = df.loc[df['month'] == j]
+                        numNaN.append(df[l].isnull().sum())
+                        consecNaN.append(max(df[l].isnull().astype(int).groupby(df[l].notnull().astype(int).cumsum()).sum()))
+
+                    # Count the number of NaN higher than 20 and the number of consecNaN higher than 8
+                    count_numNaN = sum(map(lambda x: x >= 20, numNaN))
+                    count_consecNaN = sum(map(lambda x: x >= 8, consecNaN))
+                    
+                    print(k, j, i)
+                    print(numNaN, consecNaN)
+                    print(count_numNaN, count_consecNaN)
+                    
+                    # Get the first and last index of those months with too many empty (or consecutive) values 
+                    # in several variables (NaN in this case)
+                    if count_numNaN >= 3 or count_consecNaN >= 3:
+                        indexInit.append(df.index[0])
+                        indexEnd.append(df.index[-1])
+                    
+                    # Clean numNaN and consecNaN
+                    numNaN, consecNaN = [], []
+
+                    df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
+
+                    if j == 12 and k == 31:
+                        df = df.loc[df['year'] == (i+1)]
+                        df = df.loc[df['month'] == 1]
+                    
+                    elif j <= 12:
+                        df = df.loc[df['year'] == i]
                         
-    #                     elif k == 31:
-    #                         df = df.loc[df['month'] == (j+1)]
+                        if k < 31:
+                            df = df.loc[df['month'] == j]
+                        
+                        elif k == 31:
+                            df = df.loc[df['month'] == (j+1)]
 
-    #     # Delete those parts of the data frame between the appended indices
-    #     df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
+        # Delete those parts of the data frame between the appended indices
+        df = pd.read_csv(f'Database/{fileName}.csv', delimiter=';')
 
-    #     counter = 0
-    #     lenDay = 96
-    #     for i,j in zip(indexInit, indexEnd):
+        counter = 0
+        lenDay = 96
+        for i,j in zip(indexInit, indexEnd):
 
-    #         df = df.drop(df.index[int(i-counter*lenDay):int(j-counter*lenDay+1)], inplace=False)
-    #         counter += 1
+            df = df.drop(df.index[int(i-counter*lenDay):int(j-counter*lenDay+1)], inplace=False)
+            counter += 1
 
-    #     # Interpolate the remaining empty values
-    #     df = (df.interpolate(method='polynomial', order=1)).round(2)
+        # Interpolate the remaining empty values
+        df = (df.interpolate(method='polynomial', order=1)).round(2)
 
-    #     # Save the data frame
-    #     cols = list(df.columns.values.tolist())
-    #     df.to_csv(f'Database/{fileName[0:-4]}_pro.csv', sep=';', encoding='utf-8', index=False, header=cols)
+        # Save the data frame
+        cols = list(df.columns.values.tolist())
+        df.to_csv(f'Database/{fileName[0:-4]}_pro.csv', sep=';', encoding='utf-8', index=False, header=cols)
