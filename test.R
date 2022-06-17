@@ -1,8 +1,24 @@
-i <- 2019
-j <- 4
+getter <- function() {
 
-empty_list <- list()
+    total_years <- as.integer(readline(prompt = "Enter the desired number years: "))
 
-empty_list[[1]] <- c(j, i)
+    x <- 0
+    number_years <- vector()
 
-print(empty_list[1][1])
+    while (x < total_years) {
+
+        data <- readline(prompt = "Enter each of the years: ")
+
+        number_years <- c(number_years, data)
+
+        x <- x + 1
+    }
+
+    return(as.integer(number_years))
+}
+
+number_years <- getter()
+
+for (i in number_years) {
+    print(i)
+}
