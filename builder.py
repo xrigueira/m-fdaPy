@@ -326,11 +326,11 @@ def builder(File, timeFrame):
                 startDate = [i for i in startDate if i != '-']
                 endDate = [i for i in endDate if i != '-']
                 
-                # Get the closest starting date to the user input
+                # Get the closest starting date to the user's input
                 yearBegin = int(yearBeginOri) + i
                 
                 # RFE: In case the initial or ending months are missing it should do the following:
-                # For the initial month -> check the starting dates in the following month and do the same until a existing startind date is found
+                # For the initial month -> check the starting dates in the following month and do the same until an existing startind date is found
                 # For the ending month -> the same but backwards in time.
                 for j in startDate:
                     # It should jump to the next month before the if statement in case that the initial month does not exist

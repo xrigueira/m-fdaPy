@@ -30,7 +30,7 @@ df <- read.csv("Database/argentina_test.csv", header = TRUE, sep = ";", stringsA
 
 # Define the variables for the desired time units
 time_frame <- "b" # "a" for months, "b" for weeks, "c" for days
-span <- "b" # This variable is to select different combinations later
+span <- "c" # This variable is to select different combinations later
 
 # Get the number of years in the database
 years <- c(df$year)[!duplicated(c(df$year))]
@@ -375,42 +375,181 @@ if (time_frame == "a") {
 
         for (i in years) {
 
-            for (j in week_number) {
+            for (j in months) {
 
-                mat <- unname(data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                for (k in week_number) {
 
+                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & weekOrder == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+
+                    # Select the first 7 rows of the corresponding range for the columns startDate and endDate
+                    dates <- select(filter(df, year == i & month == j & weekOrder == k), c(startDate, endDate))[1:7, ]
+
+                    # Remove the dashes, unname it and turn into char
+                    dates <- as.character(unname(subset(dates, startDate != "-" & endDate != "-")))
+
+                    if ((nrow(mat) %% 2) == 1) {
+
+                        # Add a new row which contains the mean of every column
+                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+
+                        if (nrow(mat) == 8) {
+
+                            mts[[counter]] <- mat
+
+                            # Add the time stamps
+                            time_stamps[[counter]] <- dates
+
+                        }
+
+                    } else if ((nrow(mat) %% 2) == 0) {
+
+                        if ((nrow(mat)) == 8) {
+
+                            mts[[counter]] <- mat
+
+                            time_stamps[[counter]] <- dates
+
+                        }
+
+                    }
+
+                    counter <- counter + 1
+                }
+            }
+        }
+
+    } else if (span == "d") {
+
+        year_begin <- as.integer(readline(prompt = "Enter the first year desired: "))
+        month_begin <- as.integer(readline(prompt = "Enter the first month desired: "))
+        day_begin <- as.integer(readline(prompt = "Enter the fist day desired: "))
+        year_end <- as.integer(readline(prompt = "Enter the last year desired: "))
+        month_end <- as.integer(readline(prompt = "Enter the last month desired: "))
+        day_end <- as.integer(readline(prompt = "Enter the last day desired: "))
+
+        # Get the indices to subset the data frame
+        index_startDate <- as.numeric(rownames(df[df$year == year_begin & df$month == month_begin & df$weekOrder == order_begin, ])[1])
+        index_endDate <- as.numeric(tail(rownames(df[df$year == year_end & df$month == month_end & df$weekOrder == order_end, ]), n = 1))
+
+        df_sub <- df[index_startDate:index_endDate, ]
+
+        # Get the updated numbers of the weeks
+        weeks <- c(df_sub$week)[!duplicated(c(df_sub$week))]
+
+        for (k in weeks) {
+
+            mat <- unname(data.matrix(select(filter(df_sub, week == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+
+            # Select the first 7 rows of the corresponding range for the columns startDate and endDate
+            dates <- select(filter(df_sub, week == k), c(startDate, endDate))[1:7, ]
+
+            # Remove the dashes, unname it and turn into char
+            dates <- as.character(unname(subset(dates, startDate != "-" & endDate != "-")))
+
+            if ((nrow(mat) %% 2) == 1) {
+                
+                # Add a new row which contains the mean of every column
+                mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+
+                if (nrow(mat) == 8) {
+
+                    mts[[counter]] <- mat
+
+                    # Add the time stamps
+                    time_stamps[[counter]] <- dates
+
+                }
+
+            } else if ((nrow(mat) %% 2) == 0) {
+
+                if ((nrow(mat)) == 8) {
+
+                    mts[[counter]] <- mat
+
+                    time_stamps[[counter]] <- dates
+
+                }
+
+            }
+
+            counter <- counter + 1
+
+        }
+
+    } else if (span == "c") {
+        
+        # year_begin_init <- as.integer(readline(prompt = "Enter the first year desired: "))
+        # month_begin <- as.integer(readline(prompt = "Enter the first month desired: "))
+        # day_begin <- as.integer(readline(prompt = "Enter the fist day desired: "))
+        # year_end <- as.integer(readline(prompt = "Enter the last year desired: "))
+        # month_end <- as.integer(readline(prompt = "Enter the last month desired: "))
+        # day_end <- as.integer(readline(prompt = "Enter the last day desired: "))
+
+        year_begin_init <- 2014
+        month_begin <- 1
+        order_begin <- 1
+        year_end <- 2016
+        month_end <- 2
+        order_end <- 2
+
+        total_years <- year_end - year_begin_init
+
+        for (i in seq(from = 0, to = total_years, by = 1)) {
+            
+            year_begin <- year_begin_init + i
+
+            # Get the indices to subset the data frame
+            index_startDate <- as.numeric(rownames(df[df$year == year_begin & df$month == month_begin & df$weekOrder == order_begin, ])[1])
+            index_endDate_test <-as.numeric(rownames(df[df$year == year_begin & df$month == month_end & df$weekOrder == order_end, ]))
+            index_endDate <- as.numeric(tail(rownames(df[df$year == year_begin & df$month == month_end & df$weekOrder == order_end, ]), n = 1))
+
+            df_sub <- df[index_startDate:index_endDate, ]
+
+            # Get the updated numbers of the weeks
+            weeks <- c(df_sub$week)[!duplicated(c(df_sub$week))]
+
+            for (k in weeks) {
+
+                mat <- unname(data.matrix(select(filter(df_sub, week == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+
+                # Select the first 7 rows of the corresponding range for the columns startDate and endDate
+                dates <- select(filter(df_sub, week == k), c(startDate, endDate))[1:7, ]
+
+                # Remove the dashes, unname it and turn into char
+                dates <- as.character(unname(subset(dates, startDate != "-" & endDate != "-")))
+                print(dates)
                 if ((nrow(mat) %% 2) == 1) {
 
                     # Add a new row which contains the mean of every column
                     mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
 
-                    if (nrow(mat) == 32) {
+                    if (nrow(mat) == 8) {
 
                         mts[[counter]] <- mat
-
+                        print(mat)
                         # Add the time stamps
-                        time_stamps[[counter]] <- c(j, i)
+                        time_stamps[[counter]] <- dates
 
                     }
 
                 } else if ((nrow(mat) %% 2) == 0) {
 
-                    if ((nrow(mat)) == 32) {
+                    if ((nrow(mat)) == 8) {
 
                         mts[[counter]] <- mat
 
-                        time_stamps[[counter]] <- c(j, i)
+                        time_stamps[[counter]] <- dates
 
                     }
 
                 }
 
                 counter <- counter + 1
+
             }
+
         }
 
-    } else if (span == 'c') {
-        # TODO
     }
 
 } else if (time_frame == "c") {
@@ -461,7 +600,7 @@ if (time_frame == "a") {
 
     } else if (span == "b") {
 
-        # TODO
+        # TODO: Continue here
     }
 
 }
