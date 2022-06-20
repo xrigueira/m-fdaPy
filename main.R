@@ -29,8 +29,8 @@ time_getter <- function() {
 df <- read.csv("Database/argentina_test.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
 # Define the variables for the desired time units
-time_frame <- "b" # "a" for months, "b" for weeks, "c" for days
-span <- "c" # This variable is to select different combinations later
+time_frame <- "c" # "a" for months, "b" for weeks, "c" for days
+span <- "g" # This variable is to select different combinations later
 
 # Get the number of years in the database
 years <- c(df$year)[!duplicated(c(df$year))]
@@ -221,15 +221,10 @@ if (time_frame == "a") {
 
     } else if (span == "e") { # A range of months
 
-        # year_start <- as.integer(readline(prompt = "Enter the starting year: "))
-        # month_start <- as.integer(readline(prompt = "Enter the starting month: "))
-        # year_end <- as.integer((readline(prompt = "Enter the ending year: ")))
-        # month_end <- as.integer(readline(prompt = "Enter the ending month: "))
-
-        year_start <- 2014
-        month_start <- 9
-        year_end <- 2015
-        month_end <- 2
+        year_start <- as.integer(readline(prompt = "Enter the starting year: "))
+        month_start <- as.integer(readline(prompt = "Enter the starting month: "))
+        year_end <- as.integer((readline(prompt = "Enter the ending year: ")))
+        month_end <- as.integer(readline(prompt = "Enter the ending month: "))
 
         for (i in years) {
 
@@ -328,7 +323,7 @@ if (time_frame == "a") {
 
 } else if (time_frame == "b") {
 
-    if (span == "a") {
+    if (span == "a") { # All weeks
 
         for (i in weeks) {
 
@@ -369,7 +364,7 @@ if (time_frame == "a") {
 
         }
 
-    } else if (span == "b") {
+    } else if (span == "b") { # 1st/2nd/3rd/4th week of each month
 
         week_number <- as.integer(readline(prompt = "Enter the week number: "))
 
@@ -418,14 +413,14 @@ if (time_frame == "a") {
             }
         }
 
-    } else if (span == "d") {
+    } else if (span == "d") { # Range of weeks
 
         year_begin <- as.integer(readline(prompt = "Enter the first year desired: "))
         month_begin <- as.integer(readline(prompt = "Enter the first month desired: "))
-        day_begin <- as.integer(readline(prompt = "Enter the fist day desired: "))
+        order_begin <- as.integer(readline(prompt = "Enter the fist week number of the month desired: "))
         year_end <- as.integer(readline(prompt = "Enter the last year desired: "))
         month_end <- as.integer(readline(prompt = "Enter the last month desired: "))
-        day_end <- as.integer(readline(prompt = "Enter the last day desired: "))
+        order_end <- as.integer(readline(prompt = "Enter the last week number of the month desired: "))
 
         # Get the indices to subset the data frame
         index_startDate <- as.numeric(rownames(df[df$year == year_begin & df$month == month_begin & df$weekOrder == order_begin, ])[1])
@@ -478,19 +473,12 @@ if (time_frame == "a") {
 
     } else if (span == "c") {
         
-        # year_begin_init <- as.integer(readline(prompt = "Enter the first year desired: "))
-        # month_begin <- as.integer(readline(prompt = "Enter the first month desired: "))
-        # day_begin <- as.integer(readline(prompt = "Enter the fist day desired: "))
-        # year_end <- as.integer(readline(prompt = "Enter the last year desired: "))
-        # month_end <- as.integer(readline(prompt = "Enter the last month desired: "))
-        # day_end <- as.integer(readline(prompt = "Enter the last day desired: "))
-
-        year_begin_init <- 2014
-        month_begin <- 1
-        order_begin <- 1
-        year_end <- 2016
-        month_end <- 2
-        order_end <- 2
+        year_begin_init <- as.integer(readline(prompt = "Enter the first year desired: "))
+        month_begin <- as.integer(readline(prompt = "Enter the first month desired: "))
+        order_begin <- as.integer(readline(prompt = "Enter the fist week number of the month desired: "))
+        year_end <- as.integer(readline(prompt = "Enter the last year desired: "))
+        month_end <- as.integer(readline(prompt = "Enter the last month desired: "))
+        order_end <- as.integer(readline(prompt = "Enter the last week number of the month desired: "))
 
         total_years <- year_end - year_begin_init
 
@@ -500,7 +488,6 @@ if (time_frame == "a") {
 
             # Get the indices to subset the data frame
             index_startDate <- as.numeric(rownames(df[df$year == year_begin & df$month == month_begin & df$weekOrder == order_begin, ])[1])
-            index_endDate_test <-as.numeric(rownames(df[df$year == year_begin & df$month == month_end & df$weekOrder == order_end, ]))
             index_endDate <- as.numeric(tail(rownames(df[df$year == year_begin & df$month == month_end & df$weekOrder == order_end, ]), n = 1))
 
             df_sub <- df[index_startDate:index_endDate, ]
@@ -569,22 +556,19 @@ if (time_frame == "a") {
                         # Add a new row which contains the mean of every column
                         mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
 
-                        if (nrow(mat) == 1) { # 1 because it is the number of rows in a month after fixing the matrix
+                        if (nrow(mat) == 96) { # 96 because it is the number of rows in a day after fixing the matrix
 
                             mts[[counter]] <- mat
-
-                            # Add the time stamps
                             time_stamps[[counter]] <- c(k, j, i)
 
                         }
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if (nrow(mat) == 32) {
+                        if (nrow(mat) == 96) {
 
                             mts[[counter]] <- mat
-
-                            time_stamps[[counter]] <- c(j, i)
+                            time_stamps[[counter]] <- c(k, j, i)
 
                         }
 
@@ -598,17 +582,288 @@ if (time_frame == "a") {
 
         }
 
-    } else if (span == "b") {
+    } else if (span == "b") { # All days of one or several years
 
-        # TODO: Continue here
+        number_years <- time_getter()
+
+        for (i in number_years) {
+
+            for (j in months) {
+
+                for (k in days) {
+
+                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+
+                    if ((nrow(mat) %% 2) == 1) {
+
+                        # Add a new row which contains the mean of every column
+                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+
+                        if (nrow(mat) == 96) { # 32 because it is the number of rows in a month after fixing the matrix
+
+                            mts[[counter]] <- mat
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+
+                    } else if ((nrow(mat) %% 2) == 0) {
+
+                        if (nrow(mat) == 96) {
+
+                            mts[[counter]] <- mat
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+
+                    }
+
+                    counter <- counter + 1
+
+                }
+
+            }
+
+        }
+
+    } else if (span == "c") { # All days of one or several months
+        
+        number_months <- time_getter()
+
+        for (i in years) {
+
+            for (j in number_months) {
+
+                for (k in days) {
+
+                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+
+                    if ((nrow(mat) %% 2) == 1) {
+
+                        # Add a new row which contains the mean of every column
+                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+
+                        if (nrow(mat) == 96) {
+
+                            mts[[counter]] <- mat
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+                    } else if ((nrow(mat) %% 2) == 0) {
+
+                        if ((nrow(mat)) == 96) {
+
+                            mts[[counter]] <- mat
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+
+                    }
+
+                    counter <- counter + 1
+
+                }
+
+            }
+
+        }
+
+    } else if (span == "d") { # One or a range of days in every month of every year
+
+        number_days <- time_getter()
+
+        for (i in years) {
+
+            for (j in months) {
+
+                for (k in number_days) {
+
+                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+
+                    if ((nrow(mat) %% 2) == 1) {
+
+                        # Add a new row which contains the mean of every column
+                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+
+                        if (nrow(mat) == 96) {
+
+                            mts[[counter]] <- mat
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+
+                    } else if ((nrow(mat) %% 2) == 0) {
+
+                        if (nrow(mat) == 96) {
+
+                            mts[[counter]] <- mat
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+
+                    }
+
+                    counter <- counter + 1
+
+                }
+
+            }
+
+        }
+
+    } else if (span == "e") { # One or a range of days in several years
+
+        number_years <- time_getter()
+        number_days <- time_getter()
+
+        for (i in number_years) {
+
+            for (j in months) {
+
+                for (k in number_days) {
+
+                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+
+                    if ((nrow(mat) %% 2) == 1) {
+
+                        # Add a new row which contains the mean of every column
+                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+
+                        if (nrow(mat) == 96) {
+
+                            mts[[counter]] <- mat
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+
+                    } else if ((nrow(mat) %% 2) == 0) {
+
+                        if (nrow(mat) == 96) {
+
+                            mts[[counter]] <- mat
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+
+                    }
+
+                    counter <- counter + 1
+
+                }
+
+            }
+
+        }
+
+    } else if (span == "f") { # One or a range of days in several months in several years
+
+        number_years <- time_getter()
+        number_months <- time_getter()
+        number_days <- time_getter()
+
+        for (i in number_years) {
+
+            for (j in number_months) {
+
+                for (k in number_days) {
+
+                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+
+                    if ((nrow(mat) %% 2) == 1) {
+
+                        # Add a new row which contains the mean of every column
+                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+
+                        if (nrow(mat) == 96) {
+
+                            mts[[counter]] <- mat
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+
+                    } else if ((nrow(mat) %% 2) == 0) {
+
+                        if (nrow(mat) == 96) {
+
+                            mts[[counter]] <- mat
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+
+                    }
+
+                    counter <- counter + 1
+
+                }
+
+            }
+
+        }
+
+    } else if (span == "g") { # A range of days
+
+        year_begin <- as.integer(readline(prompt = "Enter the first year desired: "))
+        month_begin <- as.integer(readline(prompt = "Enter the first month desired: "))
+        day_begin <- as.integer(readline(prompt = "Enter the fist day desired: "))
+        year_end <- as.integer(readline(prompt = "Enter the last year desired: "))
+        month_end <- as.integer(readline(prompt = "Enter the last month desired: "))
+        day_end <- as.integer(readline(prompt = "Enter the last day desired: "))
+
+        # Get the indices to subset the data frame
+        index_startDate <- as.numeric(rownames(df[df$year == year_begin & df$month == month_begin & df$day == day_begin, ])[1])
+        index_endDate <- as.numeric(tail(rownames(df[df$year == year_end & df$month == month_end & df$day == day_end, ]), n = 1))
+
+        df_sub <- df[index_startDate:index_endDate, ]
+
+        # Get updated date info of the cropped database
+        years <- c(df$year)[!duplicated(c(df$year))]
+        months <- c(df$month)[!duplicated(c(df$month))]
+        days <- c(df$day)[!duplicated(c(df$day))]
+
+        for (i in years) {
+
+            for (j in months) {
+
+                for (k in days) {
+
+                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+
+                    if ((nrow(mat) %% 2) == 1) {
+
+                        # Add a new row which contains the mean of every column
+                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+
+                        if (nrow(mat) == 96) {
+
+                            mts[[counter]] <- mat
+
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+
+                    } else if ((nrow(mat) %% 2) == 0) {
+
+                        if ((nrow(mat)) == 96) {
+
+                            mts[[counter]] <- mat
+                            time_stamps[[counter]] <- c(k, j, i)
+
+                        }
+
+                    }
+
+                    counter <- counter + 1
+
+                }
+
+            }
+
+        }
+
     }
 
 }
 
 
-# for (i in mts) {
-#     print(length(i))
-# }
 
 # Test if it works
 # outliers <- outlier_detection(mts)
