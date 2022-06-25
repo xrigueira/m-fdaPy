@@ -1,30 +1,30 @@
-library(mlmts)
+library(tidyverse)
+library(ggplot2)
+library(reshape2)
 
-mts <- list()
+output <- matrix(ncol = length(mts$data), nrow = 32)
 counter <- 1
 
-while (counter <= 20) {
+for (i in mts$data) {
 
-    if ((counter %% 10) == 0) {
-
-        mat <- matrix(rnorm(n = 1344, mean = 100, sd = 100), nrow = 672)
-        mts[[counter]] <- mat
-
-    } else {
-
-        mat <- matrix(rnorm(n = 1344, mean = 0, sd = 1), nrow = 672)
-        mts[[counter]] <- mat
-
-    }
+    output[, counter] <- i[, 1] # This 1 here is the number we have to change
+    # depending on which variable we want (co2, no2 etc are in different columsn and
+    # this number is the column we want
 
     counter <- counter + 1
 
 }
 
-matplot(mts[[1]], type = "l")
-matplot(mts[[10]], type = "l")
+# Insert column names
+colnames(output) <- mts$time
+output <- cbind(output, time = c(1:32))
 
-# outliers <- outlier_detection(mts)
+# Converto to tibble
+output <- as.data.frame(output)
 
+# Plotting
+df <- melt(output, id.vars = "time", variable.name = "series")
 
-# print(outliers$Depths)
+# plot on same grid, each series colored differently -- 
+# good if the series have same scale
+plot1 <- ggplot(df, aes(time, value)) + geom_line(aes(colour = series))

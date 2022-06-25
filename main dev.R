@@ -1,6 +1,11 @@
 # TODO: this file will contain the implementation of both algorithms
 # from Lopez-Oriona 2021
 
+# The changes in main dev.R only apply to 4 lines (06/25/2022)
+# lines 84 and 89 -> removed the unname(). See other loops to compare the changes
+# lines 94 and 94 -> combined the data and the time_stamps in just one object.
+# Also see other loops down in the file for comparison
+
 # Include the necessary libraries
 # library(dplyr)
 library(mlmts)
@@ -78,19 +83,20 @@ if (time_frame == "a") {
 
             for (j in months) {
 
-                mat <- unname(data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                 if ((nrow(mat) %% 2) == 1) {
 
                     # Add a new row which contains the mean of every column
-                    mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                    mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
                     if (nrow(mat) == 32) { # 32 because it is the number of rows in a month after fixing the matrix
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
                         # Add the time stamps
-                        time_stamps[[counter]] <- c(j, i)
+                        mts$time[[counter]] <- c(j, i)
+                        # time_stamps[[counter]] <- c(j, i)
 
                     }
 
@@ -908,9 +914,9 @@ outliers <- outlier_detection(mts$data)
 # # Apply the outlying order to the time stamps
 ordered_dates <- bully(list = mts$time, order = outliers$Indexes)
 
-print(outliers$Indexes)
+# print(outliers$Indexes)
 print(outliers$Depths)
-print(ordered_dates)
+# print(ordered_dates)
 
 # Plotting
 # functional_data_so2 <- data.frame(Jan2014 = mts[[1]][, 1])
