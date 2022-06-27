@@ -1,11 +1,18 @@
 # TODO: this file will contain the implementation of both algorithms
 # from Lopez-Oriona 2021
 
+# The changes in main dev.R only apply to 4 lines (06/25/2022)
+# lines 84 and 89 -> removed the unname(). See other loops to compare the changes
+# lines 94 and 94 -> combined the data and the time_stamps in just one object.
+# Also see other loops down in the file for comparison
+
 # Include the necessary libraries
 # library(dplyr)
 library(mlmts)
 library(plotly)
 library(tidyverse)
+
+source("plotter.R")
 
 # Function to get time data from the user
 time_getter <- function() {
@@ -30,7 +37,7 @@ time_getter <- function() {
 # This function is a sorter
 bully <- function(list, order) {
 
-    sorted_list <- list()
+    sorted_list <- c()
     counter <- 1
 
     for (i in order) {
@@ -42,11 +49,11 @@ bully <- function(list, order) {
         counter <- counter + 1
     }
 
-    return(sorted_list)
+    return(unlist(sorted_list))
 }
 
 # Read the csv file
-df <- read.csv("Database/argentina_test.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+df <- read.csv("Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
 # Define the variables for the desired time units
 time_frame <- "a" # "a" for months, "b" for weeks, "c" for days
@@ -78,35 +85,39 @@ if (time_frame == "a") {
 
             for (j in months) {
 
-                mat <- unname(data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                mat <- (data.matrix(select(filter(df, year == i & month == j), c(Nitratos))))
 
                 if ((nrow(mat) %% 2) == 1) {
 
                     # Add a new row which contains the mean of every column
-                    mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                    mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                    if (nrow(mat) == 32) { # 32 because it is the number of rows in a month after fixing the matrix
+                    if ((nrow(mat) == 2976) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
                         # Add the time stamps
-                        time_stamps[[counter]] <- c(j, i)
+                        mts$time[[counter]] <- c(j, i)
+                        # time_stamps[[counter]] <- c(j, i)
+
+                        counter <- counter + 1
 
                     }
 
                 } else if ((nrow(mat) %% 2) == 0) {
 
-                    if (nrow(mat) == 32) {
+                    if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
-                        time_stamps[[counter]] <- c(j, i)
+                        mts$time[[counter]] <- c(j, i)
+                        # time_stamps[[counter]] <- c(j, i)
+
+                        counter <- counter + 1
 
                     }
 
                 }
-
-                counter <- counter + 1
 
             }
 
@@ -902,25 +913,19 @@ if (time_frame == "a") {
 # Continue here -> use the new data and change the names of the variables and lenght
 # of the matrices in the current code
 
+
 # Outlier detection
 outliers <- outlier_detection(mts$data)
 
-# # Apply the outlying order to the time stamps
+# Apply the outlying order to the time stamps
 ordered_dates <- bully(list = mts$time, order = outliers$Indexes)
 
-print(outliers$Indexes)
+# # print(outliers$Indexes)
 print(outliers$Depths)
 print(ordered_dates)
 
 # Plotting
-# functional_data_so2 <- data.frame(Jan2014 = mts[[1]][, 1])
+grafic <- plotter(mts, variable = 1)
 
-# Feb2014 <- mts[[2]][, 1]
-
-# functional_data_so2$Feb2014 <- Feb2014
-
-# matriz <- mts[[1]]
-# colnames(matriz) <- c("so2", "no", "no2", "co", "pm10", "o3", "pm2.5", "ben")
-
-# plot_object <- mts_plot(matriz)
+# Saving the plot
 
