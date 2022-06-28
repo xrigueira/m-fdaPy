@@ -29,7 +29,7 @@ plotter <- function(mts, variable) {
 
     # plot on same grid, each series colored differently -- 
     # good if the series have same scale
-    plot_object <- add_lines(plot_ly(data_frame, x = ~time, y = ~value, color = ~series))
+    plot_object <- add_lines(plot_ly(data_frame, x = ~time, y = ~value, color = ~series, colors = "Paired"))
 
     # With ggplot -> it can be converted to plotly with "ggplotly"
     # plot_object <- ggplot(data_frame, aes(time, value)) + geom_line(aes(colour = series))

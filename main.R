@@ -1,11 +1,6 @@
 # TODO: this file will contain the implementation of both algorithms
 # from Lopez-Oriona 2021
 
-# The changes in main dev.R only apply to 4 lines (06/25/2022)
-# lines 84 and 89 -> removed the unname(). See other loops to compare the changes
-# lines 94 and 94 -> combined the data and the time_stamps in just one object.
-# Also see other loops down in the file for comparison
-
 # Include the necessary libraries
 # library(dplyr)
 library(mlmts)
@@ -53,7 +48,7 @@ bully <- function(list, order) {
 }
 
 # Read the csv file
-df <- read.csv("Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+df <- read.csv("Database/argentina_test.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
 # Define the variables for the desired time units
 time_frame <- "a" # "a" for months, "b" for weeks, "c" for days
@@ -85,14 +80,14 @@ if (time_frame == "a") {
 
             for (j in months) {
 
-                mat <- (data.matrix(select(filter(df, year == i & month == j), c(Nitratos))))
+                mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                 if ((nrow(mat) %% 2) == 1) {
 
                     # Add a new row which contains the mean of every column
                     mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                    if ((nrow(mat) == 2976) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
+                    if ((nrow(mat) == 32) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
                         mts$data[[counter]] <- mat
 
@@ -106,7 +101,7 @@ if (time_frame == "a") {
 
                 } else if ((nrow(mat) %% 2) == 0) {
 
-                    if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
+                    if ((nrow(mat) == 32) & (nrow(mat) != 0)) {
 
                         mts$data[[counter]] <- mat
 
@@ -131,35 +126,37 @@ if (time_frame == "a") {
 
             for (j in months) {
 
-                mat <- unname(data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                 if ((nrow(mat) %% 2) == 1) {
 
                     # Add a new row which contains the mean of every column
-                    mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                    mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                    if (nrow(mat) == 32) {
+                    if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
                         # Add the time stamps
-                        time_stamps[[counter]] <- c(j, i)
+                        mts$time[[counter]] <- c(j, i)
+
+                        counter <- counter + 1
 
                     }
 
                 } else if ((nrow(mat) %% 2) == 0) {
 
-                    if ((nrow(mat)) == 32) {
+                    if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
-                        time_stamps[[counter]] <- c(j, i)
+                        mts$time[[counter]] <- c(j, i)
+
+                        counter <- counter + 1
 
                     }
 
                 }
-
-                counter <- counter + 1
 
             }
 
@@ -173,35 +170,37 @@ if (time_frame == "a") {
 
             for (j in number_months) {
 
-                mat <- unname(data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                 if ((nrow(mat) %% 2) == 1) {
 
                     # Add a new row which contains the mean of every column
-                    mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                    mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                    if (nrow(mat) == 32) {
+                    if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
                         # Add the time stamps
-                        time_stamps[[counter]] <- c(j, i)
+                        mts$time[[counter]] <- c(j, i)
+
+                        counter <- counter + 1
 
                     }
 
                 } else if ((nrow(mat) %% 2) == 0) {
 
-                    if ((nrow(mat)) == 32) {
+                    if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
-                        time_stamps[[counter]] <- c(j, i)
+                        mts$time[[counter]] <- c(j, i)
+
+                        counter <- counter + 1
 
                     }
 
                 }
-
-                counter <- counter + 1
 
             }
 
@@ -216,35 +215,37 @@ if (time_frame == "a") {
 
             for (j in number_months) {
 
-                mat <- unname(data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                 if ((nrow(mat) %% 2) == 1) {
 
                     # Add a new row which contains the mean of every column
-                    mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                    mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                    if (nrow(mat) == 32) { # 32 because it is the number of rows in a month after fixing the matrix
+                    if ((nrow(mat) == 2976) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
                         # Add the time stamps
-                        time_stamps[[counter]] <- c(j, i)
+                        mts$time[[counter]] <- c(j, i)
+
+                        counter <- counter + 1
 
                     }
 
                 } else if ((nrow(mat) %% 2) == 0) {
 
-                    if (nrow(mat) == 32) {
+                    if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
-                        time_stamps[[counter]] <- c(j, i)
+                        mts$time[[counter]] <- c(j, i)
+
+                        counter <- counter + 1
 
                     }
 
                 }
-
-                counter <- counter + 1
 
             }
 
@@ -265,87 +266,94 @@ if (time_frame == "a") {
 
                     if (j >= month_start & i == year_start) {
 
-                        mat <- unname(data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                        mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                         if ((nrow(mat) %% 2) == 1) {
 
                             # Add a new row which contains the mean of every column
-                            mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                            mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if (nrow(mat) == 32) { # 32 because it is the number of rows in a month after fixing the matrix
+                            if ((nrow(mat) == 2976) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
-                                mts[[counter]] <- mat
+                                mts$data[[counter]] <- mat
                                 # Add the time stamps
-                                time_stamps[[counter]] <- c(j, i)
+                                mts$time[[counter]] <- c(j, i)
+
+                                counter <- counter + 1
                             }
 
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if (nrow(mat) == 32) {
+                            if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
 
-                                mts[[counter]] <- mat
-                                time_stamps[[counter]] <- c(j, i)
+                                mts$data[[counter]] <- mat
+                                mts$time[[counter]] <- c(j, i)
+
+                                counter <- counter + 1
                             }
 
                         }
-
-                        counter <- counter + 1
 
                     } else if (i > year_start & i < year_end) {
 
-                        mat <- unname(data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                        mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                         if ((nrow(mat) %% 2) == 1) {
 
                             # Add a new row which contains the mean of every column
-                            mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                            mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if (nrow(mat) == 32) { # 32 because it is the number of rows in a month after fixing the matrix
+                            if ((nrow(mat) == 2976) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
-                                mts[[counter]] <- mat
+                                mts$data[[counter]] <- mat
                                 # Add the time stamps
-                                time_stamps[[counter]] <- c(j, i)
+                                mts$time[[counter]] <- c(j, i)
+
+                                counter <- counter + 1
                             }
 
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if (nrow(mat) == 32) {
+                            if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
 
-                                mts[[counter]] <- mat
-                                time_stamps[[counter]] <- c(j, i)
+                                mts$data[[counter]] <- mat
+                                mts$time[[counter]] <- c(j, i)
+
+                                counter <- counter + 1
                             }
 
                         }
-
-                        counter <- counter + 1
 
                     } else if (j <= month_end & i == year_end) {
 
-                        mat <- unname(data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                        mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                         if ((nrow(mat) %% 2) == 1) {
 
                             # Add a new row which contains the mean of every column
-                            mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                            mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if (nrow(mat) == 32) { # 32 because it is the number of rows in a month after fixing the matrix
+                            if ((nrow(mat) == 2976) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
-                                mts[[counter]] <- mat
+                                mts$data[[counter]] <- mat
                                 # Add the time stamps
-                                time_stamps[[counter]] <- c(j, i)
+                                mts$time[[counter]] <- c(j, i)
+
+                                counter <- counter + 1
                             }
 
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if (nrow(mat) == 32) {
+                            if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
 
-                                mts[[counter]] <- mat
-                                time_stamps[[counter]] <- c(j, i)
+                                mts$data[[counter]] <- mat
+                                mts$time[[counter]] <- c(j, i)
+
+                                counter <- counter + 1
                             }
 
                         }
 
-                        counter <- counter + 1
                     }
                 }
             }
@@ -360,36 +368,38 @@ if (time_frame == "a") {
 
             if (i != 0) {
 
-                mat <- unname(data.matrix(select(filter(df, week == i), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                mat <- (data.matrix(select(filter(df, week == i), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                 if ((nrow(mat) %% 2) == 1) {
 
                     # Add a new row which contains the mean of every column
-                    mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                    mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                    if (nrow(mat) == 8) { # 8 because it is the number of rows in a week after fixing the matrix
+                    if ((nrow(mat) == 672) & (nrow(mat) != 0)) { # 8 because it is the number of rows in a week after fixing the matrix
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
                         # Add the time stamps
-                        time_stamps[[counter]] <- c(i)
+                        mts$time[[counter]] <- c(i)
+
+                        counter <- counter + 1
 
                     }
 
-                } else if ((nrow(mat) %% 2) == 0) {
+                } else if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
 
                     if (nrow(mat) == 8) {
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
                         # Add the time stamps
-                        time_stamps[[counter]] <- c(i)
+                        mts$time[[counter]] <- c(i)
+
+                        counter <- counter + 1
 
                     }
 
                 }
-
-                counter <- counter + 1
 
             }
 
@@ -408,7 +418,7 @@ if (time_frame == "a") {
 
             for (k in weeks) {
 
-                mat <- unname(data.matrix(select(filter(df_sub, weekOrder == j & week == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                mat <- (data.matrix(select(filter(df_sub, weekOrder == j & week == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                 # Select the first 7 rows of the corresponding range for the columns startDate and endDate
                 dates <- select(filter(df, weekOrder == j & week == k), c(startDate, endDate))[1:7, ]
@@ -419,30 +429,33 @@ if (time_frame == "a") {
                 if ((nrow(mat) %% 2) == 1) {
 
                     # Add a new row which contains the mean of every column
-                    mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                    mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                    if (nrow(mat) == 8) {
+                    if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
                         # Add the time stamps
-                        time_stamps[[counter]] <- dates
+                        mts$time[[counter]] <- dates
+
+                        counter <- counter + 1
 
                     }
 
                 } else if ((nrow(mat) %% 2) == 0) {
 
-                    if ((nrow(mat)) == 8) {
+                    if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
 
-                        mts[[counter]] <- mat
+                        mts$data[[counter]] <- mat
 
-                        time_stamps[[counter]] <- dates
+                        mts$time[[counter]] <- dates
+
+                        counter <- counter + 1
 
                     }
 
                 }
 
-                counter <- counter + 1
             }
         }
 
@@ -466,7 +479,7 @@ if (time_frame == "a") {
 
         for (k in weeks) {
 
-            mat <- unname(data.matrix(select(filter(df_sub, week == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+            mat <- (data.matrix(select(filter(df_sub, week == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
             # Select the first 7 rows of the corresponding range for the columns startDate and endDate
             dates <- select(filter(df_sub, week == k), c(startDate, endDate))[1:7, ]
@@ -475,32 +488,34 @@ if (time_frame == "a") {
             dates <- as.character(unname(subset(dates, startDate != "-" & endDate != "-")))
 
             if ((nrow(mat) %% 2) == 1) {
-                
+
                 # Add a new row which contains the mean of every column
-                mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                if (nrow(mat) == 8) {
+                if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
 
-                    mts[[counter]] <- mat
+                    mts$data[[counter]] <- mat
 
                     # Add the time stamps
-                    time_stamps[[counter]] <- dates
+                    mts$time[[counter]] <- dates
+
+                    counter <- counter + 1
 
                 }
 
             } else if ((nrow(mat) %% 2) == 0) {
 
-                if ((nrow(mat)) == 8) {
+                if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
 
-                    mts[[counter]] <- mat
+                    mts$data[[counter]] <- mat
 
-                    time_stamps[[counter]] <- dates
+                    mts$time[[counter]] <- dates
+
+                    counter <- counter + 1
 
                 }
 
             }
-
-            counter <- counter + 1
 
         }
 
@@ -537,7 +552,7 @@ if (time_frame == "a") {
 
             for (k in weeks) {
 
-                mat <- unname(data.matrix(select(filter(df_sub, week == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                mat <- (data.matrix(select(filter(df_sub, week == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                 # Select the first 7 rows of the corresponding range for the columns startDate and endDate
                 dates <- select(filter(df_sub, week == k), c(startDate, endDate))[1:7, ]
@@ -545,37 +560,35 @@ if (time_frame == "a") {
                 # Remove the dashes, unname it and turn into char
                 dates <- as.character(unname(subset(dates, startDate != "-" & endDate != "-")))
 
-                if ((nrow(mat) == 7)) {
+                if ((nrow(mat) == 672)) { # This is a 7 when dealing with daily data
 
                     if ((nrow(mat) %% 2) == 1) {
 
                         # Add a new row which contains the mean of every column
-                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                        mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if (nrow(mat) == 8) {
+                        if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-
+                            mts$data[[counter]] <- mat
                             # Add the time stamps
-                            time_stamps[[counter]] <- dates
-                            print(mat)
-                            print(dates)
+                            mts$time[[counter]] <- dates
+
+                            counter <- counter + 1
 
                         }
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if ((nrow(mat)) == 8) {
+                        if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- dates
 
-                            time_stamps[[counter]] <- dates
+                            counter <- counter + 1
 
                         }
 
                     }
-
-                counter <- counter + 1
 
                 }
 
@@ -595,32 +608,34 @@ if (time_frame == "a") {
 
                 for (k in days) {
 
-                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
                         # Add a new row which contains the mean of every column
-                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                        mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if (nrow(mat) == 96) { # 96 because it is the number of rows in a day after fixing the matrix
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) { # 96 because it is the number of rows in a day after fixing the matrix
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if (nrow(mat) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     }
-
-                    counter <- counter + 1
 
                 }
 
@@ -638,32 +653,34 @@ if (time_frame == "a") {
 
                 for (k in days) {
 
-                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
                         # Add a new row which contains the mean of every column
-                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                        mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if (nrow(mat) == 96) { # 32 because it is the number of rows in a month after fixing the matrix
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if (nrow(mat) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     }
-
-                    counter <- counter + 1
 
                 }
 
@@ -681,31 +698,33 @@ if (time_frame == "a") {
 
                 for (k in days) {
 
-                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
                         # Add a new row which contains the mean of every column
-                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                        mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if (nrow(mat) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if ((nrow(mat)) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     }
-
-                    counter <- counter + 1
 
                 }
 
@@ -723,32 +742,34 @@ if (time_frame == "a") {
 
                 for (k in number_days) {
 
-                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
                         # Add a new row which contains the mean of every column
-                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                        mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if (nrow(mat) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if (nrow(mat) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     }
-
-                    counter <- counter + 1
 
                 }
 
@@ -767,32 +788,34 @@ if (time_frame == "a") {
 
                 for (k in number_days) {
 
-                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
                         # Add a new row which contains the mean of every column
-                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                        mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if (nrow(mat) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if (nrow(mat) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     }
-
-                    counter <- counter + 1
 
                 }
 
@@ -812,32 +835,34 @@ if (time_frame == "a") {
 
                 for (k in number_days) {
 
-                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
                         # Add a new row which contains the mean of every column
-                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                        mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if (nrow(mat) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if (nrow(mat) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     }
-
-                    counter <- counter + 1
 
                 }
 
@@ -871,33 +896,34 @@ if (time_frame == "a") {
 
                 for (k in days) {
 
-                    mat <- unname(data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
                         # Add a new row which contains the mean of every column
-                        mat <- rbind(mat, unname(round(colMeans(mat), digits = 2)))
+                        mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if (nrow(mat) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
 
-                            time_stamps[[counter]] <- c(k, j, i)
+                            counter <- counter + 1
 
                         }
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if ((nrow(mat)) == 96) {
+                        if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
 
-                            mts[[counter]] <- mat
-                            time_stamps[[counter]] <- c(k, j, i)
+                            mts$data[[counter]] <- mat
+                            mts$time[[counter]] <- c(k, j, i)
+
+                            counter <- counter + 1
 
                         }
 
                     }
-
-                    counter <- counter + 1
 
                 }
 
@@ -910,22 +936,18 @@ if (time_frame == "a") {
 }
 
 
-# Continue here -> use the new data and change the names of the variables and lenght
-# of the matrices in the current code
-
-
-# Outlier detection
+# Shape outlier detection
 outliers <- outlier_detection(mts$data)
 
-# Apply the outlying order to the time stamps
+# # Apply the outlying order to the time stamps
 ordered_dates <- bully(list = mts$time, order = outliers$Indexes)
 
-# # print(outliers$Indexes)
+# print(outliers$Indexes)
 print(outliers$Depths)
 print(ordered_dates)
 
-# Plotting
+# # Plotting
 grafic <- plotter(mts, variable = 1)
 
-# Saving the plot
-
+# Magnitude outlier detection
+# I am texting stuff in test.R
