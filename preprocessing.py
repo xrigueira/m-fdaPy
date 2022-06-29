@@ -32,7 +32,6 @@ if __name__ == '__main__':
     print('[INFO] joiner() DONE')
 
     # Filter out those months or weeks or days (depending on the desired
-    # time unit) with too many NaN in several variables and iterate on 
-    # the rest
+    # time unit) with too many NaN in several variables and iterate on the rest
     mfilterer(File='data_joi.csv', timeframe=timeFrame)
     print('[INFO] filterer() DONE')

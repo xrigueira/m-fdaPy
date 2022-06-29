@@ -2,7 +2,10 @@ library(tidyverse)
 library(ggplot2)
 library(reshape2)
 
-plotter <- function(mts, variable) {
+# This function plots all functions of a specific variable
+# in an interactive way
+
+u_plotter <- function(mts, variable) {
 
     output <- matrix(ncol = length(mts$data), nrow = nrow(mts$data[[1]]))
     counter <- 1
