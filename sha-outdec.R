@@ -1,8 +1,4 @@
-# Explain what this file does here
-
-# Load libraries
-library(mlmts)
-library(tidyverse)
+# This file does the shape outleir deteciton
 
 # This function is a sorter
 bully <- function(list, order) {
@@ -22,12 +18,16 @@ bully <- function(list, order) {
     return(unlist(sorted_list))
 }
 
-# Shape outlier detection
-outliers_shape <- outlier_detection(mts$data)
+shape_outdec <- function(mts) {
 
-# # Apply the outlying order to the time stamps
-ordered_dates <- bully(list = mts$time, order = outliers_shape$Indexes)
+    sha_result <- outlier_detection(mts$data)
 
-# print(outliers_shape$Indexes)
-print(outliers_shape$Depths)
-print(ordered_dates)
+    # Apply the outlying order to the time stamps
+    ordered_dates <- bully(as.character(mts$time), sha_result$Indexes)
+
+    sha_depth <- sha_result$Depths
+    names(sha_depth) <- ordered_dates
+
+    return(sha_depth)
+
+}

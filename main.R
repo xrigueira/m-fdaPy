@@ -13,20 +13,24 @@ library(fda.usc)
 source("builder.R")
 source("sha-outdec.R")
 source("mag-outdec.R")
-source("u-plotter.R")
-source("m-plotter.R")
+# source("u-plotter.R")
+# source("m-plotter.R")
 
 # Define the variables for the desired time units
-time_frame <- "a" # "a" for months, "b" for weeks, "c" for days
-span <- "a" # This variable is to select different combinations later
+time_frame <- "b" # "a" for months, "b" for weeks, "c" for days
+span <- "c" # This variable is to select different combinations later
 
 # Call the functions to get the results
 mts <- builder(time_frame = time_frame, span = span)
 
-# Meter la función de los detectores de outliers
-# Son funciones que aún hay que terminar. Falta
-# darle nombre, return etc.
+# Shape outlier detection
+shape_outliers <- shape_outdec(mts)
 
-uni_grafic <- u_plotter(mts, variable = 1)
+# Magnitude outlier detection
+magnitude_outliers <- magnitude_outdec(mts)
+
+# CONTINUAR PASANDO LO DE GLOB-OUTDEC A UNA FUNCIÓN Y METERLA AQUÍ
+
+# uni_grafic <- u_plotter(mts, variable = 1)
 
 # Aquí iría la fución de plot multivariable

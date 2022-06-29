@@ -55,7 +55,7 @@ builder <- function(time_frame, span) {
 
                 for (j in months) {
 
-                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(no2))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
@@ -406,7 +406,7 @@ builder <- function(time_frame, span) {
                         # Add a new row which contains the mean of every column
                         mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
+                        if ((nrow(mat) == 8) & (nrow(mat) != 0)) {
 
                             mts$data[[counter]] <- mat
 
@@ -419,7 +419,7 @@ builder <- function(time_frame, span) {
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
+                        if ((nrow(mat) == 8) & (nrow(mat) != 0)) {
 
                             mts$data[[counter]] <- mat
 
@@ -527,7 +527,7 @@ builder <- function(time_frame, span) {
 
                 for (k in weeks) {
 
-                    mat <- (data.matrix(select(filter(df_sub, week == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df_sub, week == k), c(no2))))
 
                     # Select the first 7 rows of the corresponding range for the columns startDate and endDate
                     dates <- select(filter(df_sub, week == k), c(startDate, endDate))[1:7, ]
@@ -535,14 +535,14 @@ builder <- function(time_frame, span) {
                     # Remove the dashes, unname it and turn into char
                     dates <- as.character(unname(subset(dates, startDate != "-" & endDate != "-")))
 
-                    if ((nrow(mat) == 672)) { # This is a 7 when dealing with daily data
+                    if ((nrow(mat) == 7)) { # This is a 7 when dealing with daily data
 
                         if ((nrow(mat) %% 2) == 1) {
 
                             # Add a new row which contains the mean of every column
                             mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == 8) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 # Add the time stamps
@@ -554,7 +554,7 @@ builder <- function(time_frame, span) {
 
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == 8) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- dates
