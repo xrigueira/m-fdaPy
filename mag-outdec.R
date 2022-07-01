@@ -52,6 +52,8 @@ magnitude_outdec <- function(mts) {
 
         mat_depths[i, ] <- unname(depth)
 
+        # Here I could save the functional plot for each variable
+
     }
 
     # Get multivariate magnitude depth

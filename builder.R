@@ -55,7 +55,7 @@ builder <- function(time_frame, span) {
 
                 for (j in months) {
 
-                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(no2))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                     if ((nrow(mat) %% 2) == 1) {
 

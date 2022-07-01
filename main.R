@@ -6,6 +6,8 @@
 
 # Load the libraries
 library(tidyverse)
+library(glue)
+library(reshape2)
 library(mlmts)
 library(fda.usc)
 
@@ -13,24 +15,26 @@ library(fda.usc)
 source("builder.R")
 source("sha-outdec.R")
 source("mag-outdec.R")
-# source("u-plotter.R")
-# source("m-plotter.R")
+source("glob-outdec.R")
+source("u-plotter.R")
+source("m-plotter.R")
 
 # Define the variables for the desired time units
-time_frame <- "b" # "a" for months, "b" for weeks, "c" for days
-span <- "c" # This variable is to select different combinations later
+time_frame <- "a" # "a" for months, "b" for weeks, "c" for days
+span <- "a" # This variable is to select different combinations later
 
 # Call the functions to get the results
 mts <- builder(time_frame = time_frame, span = span)
 
-# Shape outlier detection
-shape_outliers <- shape_outdec(mts)
+# Shape delpth
+shape_depth <- shape_outdec(mts)
 
-# Magnitude outlier detection
-magnitude_outliers <- magnitude_outdec(mts)
+# Magnitude depth
+magnitude_depth <- magnitude_outdec(mts)
 
-# CONTINUAR PASANDO LO DE GLOB-OUTDEC A UNA FUNCIÓN Y METERLA AQUÍ
+# Global depth (combination of magni)
+global_depth <- global_outdec(mts, shape_depth, magnitude_depth)
 
-# uni_grafic <- u_plotter(mts, variable = 1)
-
-# Aquí iría la fución de plot multivariable
+# Plot the results
+uni_grafic <- u_plotter(mts, variable = 1) # univariate results
+multi_grafic <- m_plotter(mts, time_unit = 1) # multivariate results

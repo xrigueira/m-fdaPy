@@ -1,7 +1,3 @@
-library(tidyverse)
-library(ggplot2)
-library(reshape2)
-
 # This function plots all functions of a specific variable
 # in an interactive way
 
@@ -13,7 +9,7 @@ u_plotter <- function(mts, variable) {
     for (i in mts$data) {
 
         output[, counter] <- i[, variable] # This variable here is the number we have to change
-        # depending on which variable we want (co2, no2 etc are in different columsn and
+        # depending on which variable we want, co2, no2 etc are in different columsn and
         # this number is the column we want
 
         counter <- counter + 1
@@ -24,7 +20,7 @@ u_plotter <- function(mts, variable) {
     colnames(output) <- mts$time
     output <- cbind(output, time = seq_len(nrow(mts$data[[1]])))
 
-    # Converto to data.frame
+    # Convert to data.frame
     output <- as.data.frame(output)
 
     # Plotting
