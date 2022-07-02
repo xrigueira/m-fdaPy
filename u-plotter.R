@@ -1,14 +1,33 @@
-# This function plots all functions of a specific variable
-# in an interactive way
+# The second function plots all functions of a specific
+# variable
 
-u_plotter <- function(mts, variable) {
+plot_autofeeder <- function(i, data, outliers, series, plot_object) {
 
-    output <- matrix(ncol = length(mts$data), nrow = nrow(mts$data[[1]]))
+    if (colnames(data)[i] %in% names(outliers)) {
+
+        plot_object <- plot_object +
+            geom_line(aes(x = time, y = data[, i],  group = series[i]), color = "red")
+
+
+    } else {
+
+        plot_object <- plot_object +
+            geom_line(aes(x = time, y = data[, i],  group = series[i]), color = "black")
+
+    }
+
+    return(plot_object)
+
+}
+
+u_plotter <- function(mts, outliers, variable) {
+
+    # Get the data of each desired variable and put it in a matrix (data)
+    data <- matrix(ncol = length(mts$data), nrow = nrow(mts$data[[1]]))
     counter <- 1
-
     for (i in mts$data) {
 
-        output[, counter] <- i[, variable] # This variable here is the number we have to change
+        data[, counter] <- i[, variable] # This variable here is the number we have to change
         # depending on which variable we want, co2, no2 etc are in different columsn and
         # this number is the column we want
 
@@ -16,22 +35,23 @@ u_plotter <- function(mts, variable) {
 
     }
 
-    # Insert column names
-    colnames(output) <- mts$time
-    output <- cbind(output, time = seq_len(nrow(mts$data[[1]])))
+    colnames(data) <- mts$time
+    data <- cbind(data, time = seq_len(nrow(mts$data[[1]])))
+    data <- as.data.frame(data)
+    series <- colnames(data)
 
-    # Convert to data.frame
-    output <- as.data.frame(output)
+    # Define the base plot
+    plot_object <- ggplot(data) +
+        ggtitle(glue("Functional S02 monthly data")) +
+        xlab("Time (days)") +
+        ylab("Value" ~ (mu*g/m^3)) # plotly does not take this kind of "math mode" label
 
-    # Plotting
-    data_frame <- melt(output, id.vars = "time", variable.name = "series")
+    # Add all the remaining curves with a loop
+    for (i in seq_len(ncol(data) - 1)) {
 
-    # plot on same grid, each series colored differently -- 
-    # good if the series have same scale
-    plot_object <- add_lines(plot_ly(data_frame, x = ~time, y = ~value, color = ~series, colors = "Paired"))
+        plot_object <- plot_autofeeder(i, data, outliers, series, plot_object)
 
-    # With ggplot -> it can be converted to plotly with "ggplotly"
-    # plot_object <- ggplot(data_frame, aes(time, value)) + geom_line(aes(colour = series))
+    }
 
     return(plot_object)
 

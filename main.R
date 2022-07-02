@@ -18,6 +18,7 @@ source("mag-outdec.R")
 source("glob-outdec.R")
 source("u-plotter.R")
 source("m-plotter.R")
+source("inter_u-plotter.R")
 
 # Define the variables for the desired time units
 time_frame <- "a" # "a" for months, "b" for weeks, "c" for days
@@ -32,9 +33,13 @@ shape_depth <- shape_outdec(mts)
 # Magnitude depth
 magnitude_depth <- magnitude_outdec(mts)
 
-# Global depth (combination of magni)
+# Global depth (combination of magnitude and shape)
 global_depth <- global_outdec(mts, shape_depth, magnitude_depth)
 
+# Define the outliers
+outliers <- global_depth[global_depth < quantile(global_depth, probs = c(0.10))]
+
 # Plot the results
-uni_grafic <- u_plotter(mts, variable = 1) # univariate results
+uni_grafic <- u_plotter(mts, outliers, variable = 1) # univariate results
 multi_grafic <- m_plotter(mts, time_unit = 1) # multivariate results
+inter_uni_grafic <- inter_u_plotter(mts, outliers, variable = 1) # interactive univariate
