@@ -1,7 +1,7 @@
-# The second function plots all functions of a specific 
+# The second function plots all functions of a specific
 # variable in an interactive way
 
-plot_autofeeder <- function(i, data, outliers, series, inter_plot_object) {
+i_plot_autofeeder <- function(i, data, outliers, series, inter_plot_object) {
 
     if (colnames(data)[i] %in% names(outliers)) {
 
@@ -50,7 +50,7 @@ inter_u_plotter <- function(mts, outliers, variable) {
     # Add all the remaining curves with a loop
     for (i in seq_len(ncol(data) - 1)) {
 
-        inter_plot_object <- plot_autofeeder(i, data, outliers, series, inter_plot_object)
+        inter_plot_object <- i_plot_autofeeder(i, data, outliers, series, inter_plot_object)
 
     }
 
