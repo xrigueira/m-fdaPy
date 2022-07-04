@@ -26,15 +26,19 @@ span <- "a" # This variable is to select different combinations later
 
 # Call the functions to get the results
 mts <- builder(time_frame = time_frame, span = span)
+print("[INFO] mts obtained")
 
 # Shape delpth
 shape_depth <- shape_outdec(mts)
+print("[INFO] shape depth obtained")
 
 # Magnitude depth
 magnitude_depth <- magnitude_outdec(mts)
+print("[INFO] magnitude depth obtained")
 
 # Global depth (combination of magnitude and shape)
 global_depth <- global_outdec(mts, shape_depth, magnitude_depth)
+print("[INFO] global depth obtained")
 
 # Define the outliers
 outliers <- global_depth[global_depth < quantile(global_depth, probs = c(0.10))]

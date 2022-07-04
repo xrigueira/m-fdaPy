@@ -27,7 +27,7 @@ time_getter <- function() {
 builder <- function(time_frame, span) {
 
     # Read the csv file
-    df <- read.csv("Database/argentina_test.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+    df <- read.csv("PreprocessorDaily/Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
     # Get the number of years in the database
     years <- c(df$year)[!duplicated(c(df$year))]
@@ -41,6 +41,10 @@ builder <- function(time_frame, span) {
     # Get the number of the days available in the database
     days <- c(df$day)[!duplicated(c(df$day))]
 
+    # Set number of row for daily or 15 min data
+    nrow_months <- 32 # 32 for daily; 2976 for 15 min
+    nrow_weeks <- 8 # 8 for daily; 672 for 15 min
+    nrow_days <- 96
 
     # Subsetting the data.frame to create the list of matrices
     mts <- list()
@@ -55,14 +59,14 @@ builder <- function(time_frame, span) {
 
                 for (j in months) {
 
-                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(Caudal, Pluviometria))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
                         # Add a new row which contains the mean of every column
                         mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if ((nrow(mat) == 32) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
+                        if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
                             mts$data[[counter]] <- mat
 
@@ -76,7 +80,7 @@ builder <- function(time_frame, span) {
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if ((nrow(mat) == 32) & (nrow(mat) != 0)) {
+                        if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) {
 
                             mts$data[[counter]] <- mat
 
@@ -108,7 +112,7 @@ builder <- function(time_frame, span) {
                         # Add a new row which contains the mean of every column
                         mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
+                        if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) {
 
                             mts$data[[counter]] <- mat
 
@@ -121,7 +125,7 @@ builder <- function(time_frame, span) {
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
+                        if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) {
 
                             mts$data[[counter]] <- mat
 
@@ -145,14 +149,14 @@ builder <- function(time_frame, span) {
 
                 for (j in number_months) {
 
-                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(Amonio, Conductividad, Nitratos, Oxigeno, pH, Temperatura, Turbidez))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
                         # Add a new row which contains the mean of every column
                         mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
+                        if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) {
 
                             mts$data[[counter]] <- mat
 
@@ -165,7 +169,7 @@ builder <- function(time_frame, span) {
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
+                        if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) {
 
                             mts$data[[counter]] <- mat
 
@@ -197,7 +201,7 @@ builder <- function(time_frame, span) {
                         # Add a new row which contains the mean of every column
                         mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if ((nrow(mat) == 2976) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
+                        if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
                             mts$data[[counter]] <- mat
 
@@ -210,7 +214,7 @@ builder <- function(time_frame, span) {
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
+                        if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) {
 
                             mts$data[[counter]] <- mat
 
@@ -248,7 +252,7 @@ builder <- function(time_frame, span) {
                                 # Add a new row which contains the mean of every column
                                 mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                                if ((nrow(mat) == 2976) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
+                                if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
                                     mts$data[[counter]] <- mat
                                     # Add the time stamps
@@ -259,7 +263,7 @@ builder <- function(time_frame, span) {
 
                             } else if ((nrow(mat) %% 2) == 0) {
 
-                                if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
+                                if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) {
 
                                     mts$data[[counter]] <- mat
                                     mts$time[[counter]] <- c(j, i)
@@ -278,7 +282,7 @@ builder <- function(time_frame, span) {
                                 # Add a new row which contains the mean of every column
                                 mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                                if ((nrow(mat) == 2976) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
+                                if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
                                     mts$data[[counter]] <- mat
                                     # Add the time stamps
@@ -289,7 +293,7 @@ builder <- function(time_frame, span) {
 
                             } else if ((nrow(mat) %% 2) == 0) {
 
-                                if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
+                                if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) {
 
                                     mts$data[[counter]] <- mat
                                     mts$time[[counter]] <- c(j, i)
@@ -308,7 +312,7 @@ builder <- function(time_frame, span) {
                                 # Add a new row which contains the mean of every column
                                 mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                                if ((nrow(mat) == 2976) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
+                                if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
                                     mts$data[[counter]] <- mat
                                     # Add the time stamps
@@ -319,7 +323,7 @@ builder <- function(time_frame, span) {
 
                             } else if ((nrow(mat) %% 2) == 0) {
 
-                                if ((nrow(mat) == 2976) & (nrow(mat) != 0)) {
+                                if ((nrow(mat) == nrow_months) & (nrow(mat) != 0)) {
 
                                     mts$data[[counter]] <- mat
                                     mts$time[[counter]] <- c(j, i)
@@ -350,7 +354,7 @@ builder <- function(time_frame, span) {
                         # Add a new row which contains the mean of every column
                         mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if ((nrow(mat) == 672) & (nrow(mat) != 0)) { # 8 because it is the number of rows in a week after fixing the matrix
+                        if ((nrow(mat) == nrow_weeks) & (nrow(mat) != 0)) { # 8 because it is the number of rows in a week after fixing the matrix
 
                             mts$data[[counter]] <- mat
 
@@ -361,9 +365,9 @@ builder <- function(time_frame, span) {
 
                         }
 
-                    } else if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
+                    } else if ((nrow(mat) %% 2) == 0) {
 
-                        if (nrow(mat) == 8) {
+                        if ((nrow(mat) == nrow_weeks) & (nrow(mat) != 0)) {
 
                             mts$data[[counter]] <- mat
 
@@ -406,7 +410,7 @@ builder <- function(time_frame, span) {
                         # Add a new row which contains the mean of every column
                         mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                        if ((nrow(mat) == 8) & (nrow(mat) != 0)) {
+                        if ((nrow(mat) == nrow_weeks) & (nrow(mat) != 0)) {
 
                             mts$data[[counter]] <- mat
 
@@ -419,7 +423,7 @@ builder <- function(time_frame, span) {
 
                     } else if ((nrow(mat) %% 2) == 0) {
 
-                        if ((nrow(mat) == 8) & (nrow(mat) != 0)) {
+                        if ((nrow(mat) == nrow_weeks) & (nrow(mat) != 0)) {
 
                             mts$data[[counter]] <- mat
 
@@ -467,7 +471,7 @@ builder <- function(time_frame, span) {
                     # Add a new row which contains the mean of every column
                     mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                    if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
+                    if ((nrow(mat) == nrow_weeks) & (nrow(mat) != 0)) {
 
                         mts$data[[counter]] <- mat
 
@@ -480,7 +484,7 @@ builder <- function(time_frame, span) {
 
                 } else if ((nrow(mat) %% 2) == 0) {
 
-                    if ((nrow(mat) == 672) & (nrow(mat) != 0)) {
+                    if ((nrow(mat) == nrow_weeks) & (nrow(mat) != 0)) {
 
                         mts$data[[counter]] <- mat
 
@@ -542,7 +546,7 @@ builder <- function(time_frame, span) {
                             # Add a new row which contains the mean of every column
                             mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if ((nrow(mat) == 8) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_weeks) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 # Add the time stamps
@@ -554,7 +558,7 @@ builder <- function(time_frame, span) {
 
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if ((nrow(mat) == 8) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_weeks) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- dates
@@ -590,7 +594,7 @@ builder <- function(time_frame, span) {
                             # Add a new row which contains the mean of every column
                             mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) { # 96 because it is the number of rows in a day after fixing the matrix
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) { # 96 because it is the number of rows in a day after fixing the matrix
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -601,7 +605,7 @@ builder <- function(time_frame, span) {
 
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -635,7 +639,7 @@ builder <- function(time_frame, span) {
                             # Add a new row which contains the mean of every column
                             mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) { # 32 because it is the number of rows in a month after fixing the matrix
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -646,7 +650,7 @@ builder <- function(time_frame, span) {
 
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -680,7 +684,7 @@ builder <- function(time_frame, span) {
                             # Add a new row which contains the mean of every column
                             mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -690,7 +694,7 @@ builder <- function(time_frame, span) {
                             }
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -724,7 +728,7 @@ builder <- function(time_frame, span) {
                             # Add a new row which contains the mean of every column
                             mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -735,7 +739,7 @@ builder <- function(time_frame, span) {
 
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -770,7 +774,7 @@ builder <- function(time_frame, span) {
                             # Add a new row which contains the mean of every column
                             mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -781,7 +785,7 @@ builder <- function(time_frame, span) {
 
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -817,7 +821,7 @@ builder <- function(time_frame, span) {
                             # Add a new row which contains the mean of every column
                             mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -828,7 +832,7 @@ builder <- function(time_frame, span) {
 
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -878,7 +882,7 @@ builder <- function(time_frame, span) {
                             # Add a new row which contains the mean of every column
                             mat <- rbind(mat, (round(colMeans(mat), digits = 2)))
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
@@ -889,7 +893,7 @@ builder <- function(time_frame, span) {
 
                         } else if ((nrow(mat) %% 2) == 0) {
 
-                            if ((nrow(mat) == 96) & (nrow(mat) != 0)) {
+                            if ((nrow(mat) == nrow_days) & (nrow(mat) != 0)) {
 
                                 mts$data[[counter]] <- mat
                                 mts$time[[counter]] <- c(k, j, i)
