@@ -27,9 +27,9 @@ time_getter <- function() {
 builder <- function(time_frame, span) {
 
     # Read the csv file
-    df <- read.csv("TestData/argentina_test.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
-    # df <- read.csv("Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+    df <- read.csv("Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
     # df <- read.csv("PreprocessorDaily/Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+    # df <- read.csv("TestData/argentina_test.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
     # Get the number of years in the database
     years <- c(df$year)[!duplicated(c(df$year))]
@@ -44,8 +44,8 @@ builder <- function(time_frame, span) {
     days <- c(df$day)[!duplicated(c(df$day))]
 
     # Set number of row for daily or 15 min data
-    nrow_months <- 32 # 32 for daily; 2976 for 15 min
-    nrow_weeks <- 8 # 8 for daily; 672 for 15 min
+    nrow_months <- 2976 # 32 for daily; 2976 for 15 min
+    nrow_weeks <- 672 # 8 for daily; 672 for 15 min
     nrow_days <- 96
 
     # Subsetting the data.frame to create the list of matrices
@@ -61,7 +61,7 @@ builder <- function(time_frame, span) {
 
                 for (j in months) {
 
-                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(Conductividad, Turbidez))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
@@ -349,7 +349,7 @@ builder <- function(time_frame, span) {
 
                 if (i != 0) {
 
-                    mat <- (data.matrix(select(filter(df, week == i), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, week == i), c(Amonio, Nitratos))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
@@ -589,7 +589,7 @@ builder <- function(time_frame, span) {
 
                     for (k in days) {
 
-                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(Oxigeno))))
 
                         if ((nrow(mat) %% 2) == 1) {
 

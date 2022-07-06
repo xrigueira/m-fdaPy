@@ -154,9 +154,9 @@ def mfilterer(File, timeframe):
                     count_numNaN = sum(map(lambda x: x >= 20, numNaN))
                     count_consecNaN = sum(map(lambda x: x >= 8, consecNaN))
                     
-                    print(k, j, i)
-                    print(numNaN, consecNaN)
-                    print(count_numNaN, count_consecNaN)
+                    # print(k, j, i)
+                    # print(numNaN, consecNaN)
+                    # print(count_numNaN, count_consecNaN)
                     
                     # Get the first and last index of those months with too many empty (or consecutive) values 
                     # in several variables (NaN in this case)
