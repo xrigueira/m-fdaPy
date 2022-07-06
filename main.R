@@ -4,6 +4,9 @@
 # by Lopez-Oriona 2021, and the magnitude component is obtained
 # with a weak multivariate version of the Fraiman-Muñiz depth.
 
+# Get starting time
+start_time <- Sys.time()
+
 # Load the libraries
 library(tidyverse)
 library(glue)
@@ -47,3 +50,9 @@ outliers <- global_depth[global_depth < quantile(global_depth, probs = c(0.10))]
 uni_grafic <- u_plotter(mts, outliers, variable = 1) # univariate results
 multi_grafic <- m_plotter(mts, time_unit = 1) # multivariate results
 inter_uni_grafic <- inter_u_plotter(mts, outliers, variable = 1) # interactive univariate
+
+# Get ending time
+end_time <- Sys.time()
+
+# Output time elapsed
+print(end_time - start_time)

@@ -27,7 +27,9 @@ time_getter <- function() {
 builder <- function(time_frame, span) {
 
     # Read the csv file
-    df <- read.csv("PreprocessorDaily/Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+    df <- read.csv("TestData/argentina_test.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+    # df <- read.csv("Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
+    # df <- read.csv("PreprocessorDaily/Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
     # Get the number of years in the database
     years <- c(df$year)[!duplicated(c(df$year))]
@@ -59,7 +61,7 @@ builder <- function(time_frame, span) {
 
                 for (j in months) {
 
-                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(Caudal, Pluviometria))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
 
                     if ((nrow(mat) %% 2) == 1) {
 
@@ -339,7 +341,7 @@ builder <- function(time_frame, span) {
             }
         }
 
-    } else if (time_frame == "b") { # A range of weeks in several or all years
+    } else if (time_frame == "b") {
 
         if (span == "a") { # All weeks
 
