@@ -26,12 +26,13 @@ source("inter_u-plotter.R")
 # Define the variables for the desired time units
 time_frame <- "a" # "a" for months, "b" for weeks, "c" for days
 span <- "a" # This variable is to select different combinations later
+variables <- c("Turbidez", "Conductividad")
 
 # Call the functions to get the results
-mts <- builder(time_frame = time_frame, span = span)
+mts <- builder(time_frame = time_frame, span = span, variables = variables)
 print("[INFO] mts obtained")
 
-# Shape delpth
+# Shape depth
 shape_depth <- shape_outdec(mts)
 print("[INFO] shape depth obtained")
 

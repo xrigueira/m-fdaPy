@@ -14,7 +14,6 @@ df <- read.csv("Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFacto
 # df <- read.csv("PreprocessorDaily/Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 # df <- read.csv("TestData/argentina_test.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
 
-
 cor <- correlation(data_frame = df, variables = c("Amonio", "Conductividad", "Nitratos", "Oxigeno", "pH", "Temperatura", "Turbidez"))
 
 png("corr_matrix.png", width = 600, height = 600)

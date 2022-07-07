@@ -24,7 +24,7 @@ time_getter <- function() {
     return(as.integer(number_timeunit))
 }
 
-builder <- function(time_frame, span) {
+builder <- function(time_frame, span, variables) {
 
     # Read the csv file
     df <- read.csv("Database/data_pro.csv", header = TRUE, sep = ";", stringsAsFactors = FALSE)
@@ -61,7 +61,7 @@ builder <- function(time_frame, span) {
 
                 for (j in months) {
 
-                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(Conductividad, Turbidez))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j), variables)))
 
                     if ((nrow(mat) %% 2) == 1) {
 
@@ -107,7 +107,7 @@ builder <- function(time_frame, span) {
 
                 for (j in months) {
 
-                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j), variables)))
 
                     if ((nrow(mat) %% 2) == 1) {
 
@@ -151,7 +151,7 @@ builder <- function(time_frame, span) {
 
                 for (j in number_months) {
 
-                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(Amonio, Conductividad, Nitratos, Oxigeno, pH, Temperatura, Turbidez))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j), variables)))
 
                     if ((nrow(mat) %% 2) == 1) {
 
@@ -196,7 +196,7 @@ builder <- function(time_frame, span) {
 
                 for (j in number_months) {
 
-                    mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df, year == i & month == j), variables)))
 
                     if ((nrow(mat) %% 2) == 1) {
 
@@ -247,7 +247,7 @@ builder <- function(time_frame, span) {
 
                         if (j >= month_start & i == year_start) {
 
-                            mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                            mat <- (data.matrix(select(filter(df, year == i & month == j), variables)))
 
                             if ((nrow(mat) %% 2) == 1) {
 
@@ -277,7 +277,7 @@ builder <- function(time_frame, span) {
 
                         } else if (i > year_start & i < year_end) {
 
-                            mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                            mat <- (data.matrix(select(filter(df, year == i & month == j), variables)))
 
                             if ((nrow(mat) %% 2) == 1) {
 
@@ -307,7 +307,7 @@ builder <- function(time_frame, span) {
 
                         } else if (j <= month_end & i == year_end) {
 
-                            mat <- (data.matrix(select(filter(df, year == i & month == j), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                            mat <- (data.matrix(select(filter(df, year == i & month == j), variables)))
 
                             if ((nrow(mat) %% 2) == 1) {
 
@@ -349,7 +349,7 @@ builder <- function(time_frame, span) {
 
                 if (i != 0) {
 
-                    mat <- (data.matrix(select(filter(df, week == i), c(Amonio, Nitratos))))
+                    mat <- (data.matrix(select(filter(df, week == i), variables)))
 
                     if ((nrow(mat) %% 2) == 1) {
 
@@ -399,7 +399,7 @@ builder <- function(time_frame, span) {
 
                 for (k in weeks) {
 
-                    mat <- (data.matrix(select(filter(df_sub, weekOrder == j & week == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                    mat <- (data.matrix(select(filter(df_sub, weekOrder == j & week == k), variables)))
 
                     # Select the first 7 rows of the corresponding range for the columns startDate and endDate
                     dates <- select(filter(df, weekOrder == j & week == k), c(startDate, endDate))[1:7, ]
@@ -460,7 +460,7 @@ builder <- function(time_frame, span) {
 
             for (k in weeks) {
 
-                mat <- (data.matrix(select(filter(df_sub, week == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                mat <- (data.matrix(select(filter(df_sub, week == k), variables)))
 
                 # Select the first 7 rows of the corresponding range for the columns startDate and endDate
                 dates <- select(filter(df_sub, week == k), c(startDate, endDate))[1:7, ]
@@ -533,7 +533,7 @@ builder <- function(time_frame, span) {
 
                 for (k in weeks) {
 
-                    mat <- (data.matrix(select(filter(df_sub, week == k), c(no2))))
+                    mat <- (data.matrix(select(filter(df_sub, week == k), variables)))
 
                     # Select the first 7 rows of the corresponding range for the columns startDate and endDate
                     dates <- select(filter(df_sub, week == k), c(startDate, endDate))[1:7, ]
@@ -589,7 +589,7 @@ builder <- function(time_frame, span) {
 
                     for (k in days) {
 
-                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(Oxigeno))))
+                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), variables)))
 
                         if ((nrow(mat) %% 2) == 1) {
 
@@ -634,7 +634,7 @@ builder <- function(time_frame, span) {
 
                     for (k in days) {
 
-                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), variables)))
 
                         if ((nrow(mat) %% 2) == 1) {
 
@@ -679,7 +679,7 @@ builder <- function(time_frame, span) {
 
                     for (k in days) {
 
-                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), variables)))
 
                         if ((nrow(mat) %% 2) == 1) {
 
@@ -723,7 +723,7 @@ builder <- function(time_frame, span) {
 
                     for (k in number_days) {
 
-                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), variables)))
 
                         if ((nrow(mat) %% 2) == 1) {
 
@@ -769,7 +769,7 @@ builder <- function(time_frame, span) {
 
                     for (k in number_days) {
 
-                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), variables)))
 
                         if ((nrow(mat) %% 2) == 1) {
 
@@ -816,7 +816,7 @@ builder <- function(time_frame, span) {
 
                     for (k in number_days) {
 
-                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), variables)))
 
                         if ((nrow(mat) %% 2) == 1) {
 
@@ -877,7 +877,7 @@ builder <- function(time_frame, span) {
 
                     for (k in days) {
 
-                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), c(so2, no, no2, co, pm10, o3, pm2.5, ben))))
+                        mat <- (data.matrix(select(filter(df, year == i & month == j & day == k), variables)))
 
                         if ((nrow(mat) %% 2) == 1) {
 
