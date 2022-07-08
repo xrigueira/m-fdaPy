@@ -19,14 +19,35 @@ i_plot_autofeeder <- function(i, data, outliers, series, inter_plot_object) {
 
 }
 
-inter_u_plotter <- function(mts, outliers, variable) {
+y_labeler <- function(variable_index, variables) {
+
+    if (variables[variable_index] == "amonium") {
+        y_label <- "Value" ~ (m*g/L)
+    } else if (variables[variable_index] == "conductivity") {
+        y_label <- "Value" ~ (mu*S/cm)
+    } else if (variables[variable_index] == "nitrates") {
+        y_label <- "Value" ~ (m*g/L)
+    } else if (variables[variable_index] == "oxygen") {
+        y_label <- "Value" ~ (m*g/L)
+    } else if (variables[variable_index] == "pH") {
+        y_label <- "Value"
+    } else if (variables[variable_index] == "temperature") {
+        y_label <- "Value (\u00B0C)"
+    } else if (variables[variable_index] == "turbidity") {
+        y_label <- "Value (NTU)"
+    }
+
+    return(y_label)
+}
+
+inter_u_plotter <- function(mts, outliers, variable_index, variables) {
 
     # Get the data of each desired variable and put it in a matrix (data)
     data <- matrix(ncol = length(mts$data), nrow = nrow(mts$data[[1]]))
     counter <- 1
     for (i in mts$data) {
 
-        data[, counter] <- i[, variable] # This variable here is the number we have to change
+        data[, counter] <- i[, variable_index] # This variable here is the number we have to change
         # depending on which variable we want, co2, no2 etc are in different columsn and
         # this number is the column we want
 
@@ -40,8 +61,10 @@ inter_u_plotter <- function(mts, outliers, variable) {
     series <- colnames(data)
 
     # Define the base plot
+    # y_label <- y_labeler(variable_index, variables) Not suported by the interactive
+
     inter_plot_object <- plot_ly(data) %>%
-        layout(title = "Functional S02 monthly data", plot_bgcolor = "ebe7d8", xaxis = list(title = "Time (days)"), 
+        layout(title = "Functional {variables[variable_index]} monthly data", plot_bgcolor = "ebe7d8", xaxis = list(title = "Time (days)"), 
         yaxis = list(title = "Value"), legend = list(title=list(text='<b> Dates </b>')))
         # ggtitle(glue("Functional S02 monthly data")) +
         # xlab("Time (days)") +

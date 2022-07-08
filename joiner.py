@@ -37,13 +37,13 @@ def joiner():
     turbidez = dfTurbidez['value']
 
     # Insert the new columns in the database
-    df.insert(1, "Conductividad", conductividad, True)
-    df.insert(2, "Nitratos", nitratos, True)
-    df.insert(3, "Oxigeno", oxigeno, True)
+    df.insert(1, "conductivity", conductividad, True)
+    df.insert(2, "nitrates", nitratos, True)
+    df.insert(3, "oxygen", oxigeno, True)
     df.insert(4, "pH", ph, True)
-    df.insert(5, "Temperatura", temperatura, True)
-    df.insert(6, "Turbidez", turbidez, True)
+    df.insert(5, "temperature", temperatura, True)
+    df.insert(6, "turbidity", turbidez, True)
 
     cols = list(df.columns.values.tolist())
-    cols = [i.replace("value", "Amonio") for i in cols]
+    cols = [i.replace("value", "ammonium") for i in cols]
     df.to_csv(f'Database/data_joi.csv', sep=';', encoding='utf-8', index=True, header=cols)

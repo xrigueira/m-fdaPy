@@ -22,11 +22,13 @@ source("glob-outdec.R")
 source("u-plotter.R")
 source("m-plotter.R")
 source("inter_u-plotter.R")
+source("fda_u-plotter.R")
 
 # Define the variables for the desired time units
-time_frame <- "a" # "a" for months, "b" for weeks, "c" for days
+time_frame <- "b" # "a" for months, "b" for weeks, "c" for days
 span <- "a" # This variable is to select different combinations later
-variables <- c("Turbidez", "Conductividad")
+variables <- c("conductivity", "nitrates", "oxygen", "pH",  "temperature", "turbidity")
+# variables <- c("conductivity", "nitrates", "oxygen")
 
 # Call the functions to get the results
 mts <- builder(time_frame = time_frame, span = span, variables = variables)
@@ -48,9 +50,10 @@ print("[INFO] global depth obtained")
 outliers <- global_depth[global_depth < quantile(global_depth, probs = c(0.10))]
 
 # Plot the results
-uni_grafic <- u_plotter(mts, outliers, variable = 1) # univariate results
+uni_grafic <- u_plotter(mts, outliers, variable_index = 1, variables) # univariate results
 multi_grafic <- m_plotter(mts, time_unit = 1) # multivariate results
-inter_uni_grafic <- inter_u_plotter(mts, outliers, variable = 1) # interactive univariate
+inter_uni_grafic <- inter_u_plotter(mts, outliers, variable_index = 1, variables) # interactive univariate
+fda_grafic <- fda_u_plotter(mts, outliers, variable_index = 1, variables)
 
 # Get ending time
 end_time <- Sys.time()

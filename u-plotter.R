@@ -20,14 +20,35 @@ plot_autofeeder <- function(i, data, outliers, series, plot_object) {
 
 }
 
-u_plotter <- function(mts, outliers, variable) {
+y_labeler <- function(variable_index, variables) {
+
+    if (variables[variable_index] == "amonium") {
+        y_label <- "Value " ~ (m*g/L)
+    } else if (variables[variable_index] == "conductivity") {
+        y_label <- "Value " ~ (mu*S/cm)
+    } else if (variables[variable_index] == "nitrates") {
+        y_label <- "Value " ~ (m*g/L)
+    } else if (variables[variable_index] == "oxygen") {
+        y_label <- "Value " ~ (m*g/L)
+    } else if (variables[variable_index] == "pH") {
+        y_label <- "Value"
+    } else if (variables[variable_index] == "temperature") {
+        y_label <- "Value (\u00B0C)"
+    } else if (variables[variable_index] == "turbidity") {
+        y_label <- "Value (NTU)"
+    }
+
+    return(y_label)
+}
+
+u_plotter <- function(mts, outliers, variable_index, variables) {
 
     # Get the data of each desired variable and put it in a matrix (data)
     data <- matrix(ncol = length(mts$data), nrow = nrow(mts$data[[1]]))
     counter <- 1
     for (i in mts$data) {
 
-        data[, counter] <- i[, variable] # This variable here is the number we have to change
+        data[, counter] <- i[, variable_index] # This variable here is the number we have to change
         # depending on which variable we want, co2, no2 etc are in different columsn and
         # this number is the column we want
 
@@ -41,10 +62,12 @@ u_plotter <- function(mts, outliers, variable) {
     series <- colnames(data)
 
     # Define the base plot
+    y_label <- y_labeler(variable_index, variables)
+
     plot_object <- ggplot(data) +
-        ggtitle(glue("Functional S02 monthly data")) +
+        ggtitle(glue("Functional {variables[variable_index]} monthly data")) +
         xlab("Time (days)") +
-        ylab("Value" ~ (mu*g/m^3)) # plotly does not take this kind of "math mode" label
+        ylab(y_label) # plotly does not take this kind of "math mode" label
 
     # Add all the remaining curves with a loop
     for (i in seq_len(ncol(data) - 1)) {
