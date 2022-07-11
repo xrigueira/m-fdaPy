@@ -65,8 +65,8 @@ u_plotter <- function(mts, outliers, variable_index, variables) {
     y_label <- y_labeler(variable_index, variables)
 
     plot_object <- ggplot(data) +
-        ggtitle(glue("Functional {variables[variable_index]} monthly data")) +
-        xlab("Time (days)") +
+        ggtitle(glue("Functional {variables[variable_index]} weekly data")) +
+        xlab("Time (15 min intervals)") +
         ylab(y_label) # plotly does not take this kind of "math mode" label
 
     # Add all the remaining curves with a loop

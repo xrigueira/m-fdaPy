@@ -63,7 +63,7 @@ fda_u_plotter <- function(mts, outliers, variable_index, variables) {
 
     y_label <- y_labeler(variable_index, variables)
 
-    plot_object <- plot(mat_fd, main = glue("Functional {variables[variable_index]} monthly data"),
+    plot_object <- plot(mat_fd, main = glue("Functional {variables[variable_index]} weekly data"),
             xlab = "Time (15 min intervals)",
             ylab = y_label)
 

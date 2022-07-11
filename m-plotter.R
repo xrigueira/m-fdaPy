@@ -13,7 +13,7 @@ m_plotter <- function(mts, time_unit) {
 
     plot_object <- ggplot(data, aes(time, value)) +
         geom_line(aes(colour = series), size = 0.5) +
-        labs(title = glue("Multivariate plot of the time interval #", time_unit), x = "Time (days)", y = "Value") # y = "Value" ~ (mu*g/m^3)
+        labs(title = glue("Multivariate plot of the time interval #", time_unit), x = "Time (15 min intervals)", y = "Value") # y = "Value" ~ (mu*g/m^3)
 
     return(plot_object)
 
